@@ -4,10 +4,6 @@
     font-weight: bold;
 }
 
-.topic{
-    color: brown;
-}
-
 .btn1{
     border: none;
     outline: none;
@@ -33,5 +29,3 @@ body {
     -o-background-size: cover;
     height: 100vh;
 }
-
-
