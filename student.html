@@ -57,22 +57,22 @@
                       <h4 class="text-right">Profile Settings</h4>
                   </div>
                   <div class="row mt-2">
-                      <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="first name" value=""></div>
-                      <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control" value="" placeholder="surname"></div>
+                      <div class="col-md-6"><label class="labels">First Name</label><input type="text" id="enterFirstName" class="form-control" placeholder="first name" value=""></div>
+                      <div class="col-md-6"><label class="labels">Last name</label><input type="text" id="enterSecondName" class="form-control" value="" placeholder="surname"></div>
                   </div>
 
                   <div class="row mt-2">
-                    <div class="col-md-6"><label class="labels">Gaurdian's Name</label><input type="text" class="form-control" placeholder="Gaurdian's name" value=""></div>
-                    <div class="col-md-6"><label class="labels">Gaurdian's Surname</label><input type="text" class="form-control" value="" placeholder="surname"></div>
+                    <div class="col-md-6"><label class="labels">Gaurdian's Name</label><input type="text" id="enterFirstGName" class="form-control" placeholder="Gaurdian's name" value=""></div>
+                    <div class="col-md-6"><label class="labels">Gaurdian's Last Name</label><input type="text"id="enterSecondGName" class="form-control" value="" placeholder="surname"></div>
                 </div>
                   <div class="row mt-3">
-                      <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="Phone number" value=""></div>
-                      <div class="col-md-12"><label class="labels">Address</label><input type="text" class="form-control" placeholder="Address" value=""></div>
-                      <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control" placeholder="Email Id" value=""></div>
-                      <div class="col-md-12"><label class="labels">Registration No</label><input type="text" class="form-control" placeholder="ENXXXXX" value=""></div>
+                      <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" id="enterNumber" class="form-control" placeholder="Phone number" value=""></div>
+                      <div class="col-md-12"><label class="labels">Address</label><input type="text" id="enterAddress" class="form-control" placeholder="Address" value=""></div>
+                      <div class="col-md-12"><label class="labels">Email ID</label><input type="text" id="enterEmailID" class="form-control" placeholder="Email Id" value=""></div>
+                      <div class="col-md-12"><label class="labels">Registration No</label><input type="text" id="enterRegNumber" class="form-control" placeholder="ENXXXXX" value=""></div>
                   </div>
                   
-                  <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
+                  <div class="mt-5 text-center"><button class="btn btn-primary profile-button" id="insert" type="button">Save Profile</button></div>
               </div>
           </div>
           </div>
@@ -80,6 +80,151 @@
   </div>
   </div>
   </div>
+
+  <script type="module">
+
+    //------------------------------------getData-----------------------------------//
+    
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+    
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+  apiKey: "AIzaSyCp1l1kQ--YqQsZEPnIvsfDMIF6JJ_2b88",
+  authDomain: "se-mini-project-80afd.firebaseapp.com",
+  projectId: "se-mini-project-80afd",
+  storageBucket: "se-mini-project-80afd.appspot.com",
+  messagingSenderId: "702500110773",
+  appId: "1:702500110773:web:e184c3eb4f26f85a1399fc"
+};
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+            
+            import {getDatabase,set,get,update,remove,ref,child}
+            from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"
+            
+            const db =getDatabase();
+            
+            
+                        var enterFirstName=document.querySelector("#enterFirstName");
+                        var enterSecondName=document.querySelector("#enterSecondName");
+                        var enterFirstGName=document.querySelector("#enterFirstGName");
+                        var enterSecondGName=document.querySelector("#enterSecondGName");
+                        var enterNumber=document.querySelector("#enterNumber");   
+                        var enterAddress=document.querySelector("#enterAddress");
+                        var enterEmailID=document.querySelector("#enterEmailID");
+                        var enterRegNumber=document.querySelector("#enterRegNumber");
+                        
+                        
+                        var insertBtn=document.querySelector("#insert");
+                        var selecBtn=document.querySelector("#select");
+                        var removeBtn=document.querySelector("#remove");
+                       
+    
+                        function InsertData()
+                        {
+                            set(ref(db,"Student Profile/"+enterFirstName.value ),{
+                                FirstName:enterFirstName.value,
+                                SecondName:enterSecondName.value,
+                                FirstGName:enterFirstGName.value,
+                                SecondGName:enterSecondGName.value,
+                                Number:enterNumber.value,
+                                Address:enterAddress.value,
+                                EmailID:enterEmailID.value,
+                                RegNumber:enterRegNumber.value,
+                                
+                            })
+                            .then(()=>{
+                                alert("Data added Successfully!")
+                            })
+                            .catch((error)=>{
+                                alert(error)
+                            });
+    
+                    
+                        }
+                       
+                        insertBtn.addEventListener('click',InsertData);
+    
+                        function selectData()
+                        {
+                            const dbref=ref(db);
+                            get(child(dbref,"Student/" + enterFirstName.value)).then((snapshot)=>{
+                                if(snapshot.exists()){
+                                    enterSecondName.value=snapshot.val().SecondName;
+                                    enterFirstGName.value=snapshot.val().FirstGName;
+                                    enterSecondGName.value=snapshot.val().SecondGName;
+                                    enterAge.value=snapshot.val().Age;
+                                    enterNumber.value=snapshot.val().Number;
+                                    enterAddress.value=snapshot.val().Address;
+                                    enterEmailID.value=snapshot.val().EmailID;
+                                    enterRegNumber.value=snapshot.val().RegNumber;
+                                }
+                                else{
+                                    alert("No data found");
+                                }
+                            })
+                            .catch((error)=>{
+                                alert(error);
+                            })
+                            
+                        }
+                        selecBtn.addEventListener('click',selectData);
+    
+                        function RemoveData()
+                        {
+                            remove(ref(db,"Student/"+enterFirstName.value),{
+                                FirstName: enterFirstName,
+                                SecondName: enterSecondName,
+                                FirstGName: enterFirstGName,
+                                SecondGName: enterSecondGName,
+                                Age: enterAge,
+                                Grade: enterGrade,
+                                Number: enterNumber,
+                                Birthday: enterBirth,
+                                Gender: enterGender
+                            })
+                            .then(()=>{
+                                alert("Your data removed. Fill again. ")
+                            })
+                            .catch((error)=>{
+                                alert(error)
+                            });
+    
+                        }
+                        removeBtn.addEventListener('click',RemoveData);
+        //---------------------------------GetImage----------------------------------------------//
+    
+    import{getStorage,ref as sRef,uploadBytesResumable,getDownloadURL} 
+    from "https://www.gstatic.com/firebasejs/9.17.1/firebase-storage.js";
+                        
+    function upload()
+    {
+            var image=document.getElementById("image").files[0];
+            var imageName=image.name;
+            var storageRef=firebase.storage().ref('images/'+imageName);
+            var uploadTask=storageRef.put(image);
+    
+            uploadTask.on('state_changed',function(snapshot){
+                var progress=(snapshot.bytesTransferred/snapshot.totalBytes)*100;
+                console.log("upload is "+progress +"done");
+            },function(error){
+                console.log(error.message);
+                
+            },function(){
+                uploadTask.snapshot.ref.getDownLoadURL().then(function(downloadURL){
+                    console.log(downloadURL);
+                });
+            
+            });
+    }
+    
+              
+          </script>
+
+
 <!---------------------------------end of edit profile----------------------------------------------------------->
 
 <div class="form-row">

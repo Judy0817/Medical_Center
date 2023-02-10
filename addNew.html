@@ -53,39 +53,39 @@
               <h3 class="mb-2">Add New Record</h3>
   
               <div class="form-outline mb-3">
-                <input type="text" id="typefirstNameX-2" class="form-control form-control-lg" placeholder="First Name"/>
+                <input type="text" id="enterFirstName" class="form-control form-control-lg" placeholder="First Name"/>
             
               </div>
 
   
               <div class="form-outline mb-3">
-                <input type="text" id="typeLastNameX-2" class="form-control form-control-lg" placeholder="Last Name"/>
+                <input type="text" id="enterSecondName" class="form-control form-control-lg" placeholder="Last Name"/>
               
               </div>
 
               <div class="form-outline mb-3">
-                <input type="text" id="typeRegNumberX-2" class="form-control form-control-lg" placeholder="Registration No"/>
+                <input type="text" id="enterRegNumber" class="form-control form-control-lg" placeholder="Registration No"/>
               
               </div>
 
               <div class="form-outline mb-3">
-                <input type="number" id="typeAgeX-2" class="form-control form-control-lg" placeholder="Age" />
+                <input type="number" id="enterAge" class="form-control form-control-lg" placeholder="Age" />
              
               </div>
   
               <div class="form-outline mb-3">
-                <input type="text" id="typeReasonX-2" class="form-control form-control-lg" placeholder="Reason" />
+                <input type="text" id="enterReason" class="form-control form-control-lg" placeholder="Reason" />
             
               </div>
 
               <div class="form-outline mb-3">
-                <input type="radio" name="gender" value="male"> Male
-                <input type="radio" name="gender" value="female"> Female
+                <input type="radio" id="enterGender" name="gender" value="male"> Male
+                <input type="radio" id="enterGender" name="gender" value="female"> Female
 
               
               </div>
 
-                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Add Data">
+                <input type="submit" id="insert" class="btn btn-primary btn-lg btn-block" value="Add Data">
             <hr>
 
             <p>Do you want a prescription? 
@@ -99,6 +99,147 @@
       </div>
     </div>
   </section>
+
+  <script type="module">
+
+    //------------------------------------getData-----------------------------------//
+    
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+    
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+  apiKey: "AIzaSyCp1l1kQ--YqQsZEPnIvsfDMIF6JJ_2b88",
+  authDomain: "se-mini-project-80afd.firebaseapp.com",
+  projectId: "se-mini-project-80afd",
+  storageBucket: "se-mini-project-80afd.appspot.com",
+  messagingSenderId: "702500110773",
+  appId: "1:702500110773:web:e184c3eb4f26f85a1399fc"
+};
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+            
+            import {getDatabase,set,get,update,remove,ref,child}
+            from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"
+            
+            const db =getDatabase();
+            
+            
+                        var enterFirstName=document.querySelector("#enterFirstName");
+                        var enterSecondName=document.querySelector("#enterSecondName");
+                        var enterRegNumber=document.querySelector("#enterRegNumber");
+                        var enterAge=document.querySelector("#enterAge");   
+                        var enterReason=document.querySelector("#enterReason");
+                        var enterGender=document.querySelector("#enterGender");
+                        
+                        
+                        
+                        var insertBtn=document.querySelector("#insert");
+                        var selecBtn=document.querySelector("#select");
+                        var removeBtn=document.querySelector("#remove");
+                       
+    
+                        function InsertData()
+                        {
+                            set(ref(db,"Add New Record/"+enterFirstName.value ),{
+                                FirstName:enterFirstName.value,
+                                SecondName:enterSecondName.value,
+                                RegNumber:enterRegNumber.value,
+                                Age:enterAge.value,
+                                Reason:enterReason.value,
+                                Gender:enterGender.value,
+                                
+                                
+                            })
+                            .then(()=>{
+                                alert("Data added Successfully!")
+                            })
+                            .catch((error)=>{
+                                alert(error)
+                            });
+    
+                    
+                        }
+                       
+                        insertBtn.addEventListener('click',InsertData);
+    
+                        function selectData()
+                        {
+                            const dbref=ref(db);
+                            get(child(dbref,"Student/" + enterFirstName.value)).then((snapshot)=>{
+                                if(snapshot.exists()){
+                                    enterSecondName.value=snapshot.val().SecondName;
+                                    enterFirstGName.value=snapshot.val().FirstGName;
+                                    enterSecondGName.value=snapshot.val().SecondGName;
+                                    enterAge.value=snapshot.val().Age;
+                                    enterNumber.value=snapshot.val().Number;
+                                    enterAddress.value=snapshot.val().Address;
+                                    enterEmailID.value=snapshot.val().EmailID;
+                                    enterRegNumber.value=snapshot.val().RegNumber;
+                                }
+                                else{
+                                    alert("No data found");
+                                }
+                            })
+                            .catch((error)=>{
+                                alert(error);
+                            })
+                            
+                        }
+                        selecBtn.addEventListener('click',selectData);
+    
+                        function RemoveData()
+                        {
+                            remove(ref(db,"Student/"+enterFirstName.value),{
+                                FirstName: enterFirstName,
+                                SecondName: enterSecondName,
+                                FirstGName: enterFirstGName,
+                                SecondGName: enterSecondGName,
+                                Age: enterAge,
+                                Grade: enterGrade,
+                                Number: enterNumber,
+                                Birthday: enterBirth,
+                                Gender: enterGender
+                            })
+                            .then(()=>{
+                                alert("Your data removed. Fill again. ")
+                            })
+                            .catch((error)=>{
+                                alert(error)
+                            });
+    
+                        }
+                        removeBtn.addEventListener('click',RemoveData);
+        //---------------------------------GetImage----------------------------------------------//
+    
+    import{getStorage,ref as sRef,uploadBytesResumable,getDownloadURL} 
+    from "https://www.gstatic.com/firebasejs/9.17.1/firebase-storage.js";
+                        
+    function upload()
+    {
+            var image=document.getElementById("image").files[0];
+            var imageName=image.name;
+            var storageRef=firebase.storage().ref('images/'+imageName);
+            var uploadTask=storageRef.put(image);
+    
+            uploadTask.on('state_changed',function(snapshot){
+                var progress=(snapshot.bytesTransferred/snapshot.totalBytes)*100;
+                console.log("upload is "+progress +"done");
+            },function(error){
+                console.log(error.message);
+                
+            },function(){
+                uploadTask.snapshot.ref.getDownLoadURL().then(function(downloadURL){
+                    console.log(downloadURL);
+                });
+            
+            });
+    }
+    
+              
+          </script>
   <!------------------------------------------------------------------------------------------------------------------->
   
   
